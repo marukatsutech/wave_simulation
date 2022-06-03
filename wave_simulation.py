@@ -144,7 +144,7 @@ anim = animation.FuncAnimation(fig, update, interval=50)
 
 # Toolbar
 toolbar = NavigationToolbar2Tk(canvas, root)
-canvas.get_tk_widget().pack()
+canvas.get_tk_widget().pack(expand=True, fill='both')
 
 # Widgets to set parameters
 
