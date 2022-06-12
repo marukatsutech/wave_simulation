@@ -16,7 +16,7 @@ https://youtu.be/wh0Fzv2urQw
 File: wave_simulation_3d.py
 
 ## 2D simulation with constraint areas
-![image_wave_sim](https://github.com/marukatsutech/wave_simulation/blob/master/image_wave_sim.png)
+![image_wave_sim](https://github.com/marukatsutech/wave_simulation/blob/master/image_wave_simulation_constraint.png)
 
 https://youtu.be/_uHulh3Bhkc 
 
