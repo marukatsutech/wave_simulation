@@ -85,7 +85,7 @@ def update_tree():
 
 
 def update_cells():
-    global lines_mass, lines_spring_left, lines_spring_right
+    global lines_mass, lines_spring_left, lines_spring_right, lines_velocity
     # draw cells
     if var_boundary_cond.get() == 1:    # Fixed end
         y_boundary_left = 0.
@@ -95,6 +95,7 @@ def update_cells():
         y_boundary_right = y[num_of_mass - 1]
     for j in range(num_of_mass):
         lines_mass[j].set_data([j - 0.5, j + 0.5], [y[j], y[j]])
+        lines_velocity[j].set_data([j - 0.5, j + 0.5], [v[j], v[j]])
         if j == 0:
             lines_spring_left[j].set_data([j - 0.5, j - 0.5], [y[j], y_boundary_left])
         else:
@@ -114,7 +115,10 @@ def mouse_motion(event):
         if str(event.xdata) != "None" and str(event.ydata) != "None":
             # print(event.xdata, event.ydata)
             if 0 <= round(event.xdata) <= num_of_mass - 1:
-                y[round(event.xdata)] = round(event.ydata)
+                if var_radio_y_or_v.get() == 0:
+                    y[round(event.xdata)] = round(event.ydata)
+                else:
+                    v[round(event.xdata)] = round(event.ydata)
                 update_cells()
                 eval_cells()
                 update_tree()
@@ -215,6 +219,7 @@ tx_step = ax.text(x_min, y_max * 0.95, "Step=" + str(0))
 lines_mass = []
 lines_spring_left = []
 lines_spring_right = []
+lines_velocity = []
 for iii in range(num_of_mass):
     line_m, = ax.plot([iii - 0.5, iii + 0.5], [0., 0.], linewidth=6)
     lines_mass.append(line_m)
@@ -222,6 +227,8 @@ for iii in range(num_of_mass):
     lines_spring_left.append(line_sl)
     line_sr, = ax.plot([iii + 0.5, iii + 0.5], [0., 0.], linewidth=1, color='gray')
     lines_spring_right.append(line_sr)
+    line_v, = ax.plot([iii - 0.5, iii + 0.5], [0., 0.], linewidth=1, color='blue', linestyle='--')
+    lines_velocity.append(line_v)
 
 
 # Tkinter
@@ -258,6 +265,7 @@ var_boundary_cond.set(1)
 
 # Cells
 frm2 = ttk.Labelframe(root, relief="ridge", text="Cells parameters", labelanchor="n")
+frm2.pack(side='left')
 lbl_mass = tk.Label(frm2, text="mass")
 lbl_mass.pack(side='left')
 var_mass = tk.StringVar(root)  # variable for spinbox-value
@@ -276,7 +284,19 @@ spn_k = tk.Spinbox(
     command=lambda: change_k(var_k.get()), width=5
     )
 spn_k.pack(side='left')
-frm2.pack(side='left')
+
+# Radio button
+frm3 = ttk.Labelframe(root, relief="ridge", text="Click option", labelanchor="n")
+frm3.pack(side='left')
+var_radio_y_or_v = tk.IntVar(root)
+# Radio button 1st
+r_y = tk.Radiobutton(frm3, text="y", value=0, var=var_radio_y_or_v)
+r_y.pack()
+# Radio button 2nd
+r_v = tk.Radiobutton(frm3, text="v", value=1, var=var_radio_y_or_v)
+r_v.pack()
+var_radio_y_or_v.set(0)  # set default
+
 
 # Tree view
 column = ['variable']
@@ -299,7 +319,6 @@ for nn in range(num_of_mass):
 
 for kk in range(6):
     tree.insert(parent='', index='end', iid=kk, values=dummy_value)
-
 
 tree.pack(side='left')
 
