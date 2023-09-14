@@ -174,7 +174,7 @@ mass_init = mass
 k = 1.
 k_init = k
 
-x = np.linspace(0, x_max, num_of_mass)
+x = np.arange(num_of_mass)
 y = x * 0.
 dl = x * 0.
 dr = x * 0.
