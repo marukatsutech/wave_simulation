@@ -210,10 +210,6 @@ ax.grid()
 # ax.invert_yaxis()
 
 # Generate graphic items
-x_cells0 = []
-y_cells0 = []
-s_cells0 = []  # maker size
-
 tx_step = ax.text(x_min, y_max * 0.95, "Step=" + str(0))
 
 lines_mass = []
