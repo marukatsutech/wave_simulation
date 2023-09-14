@@ -174,9 +174,6 @@ mass_init = mass
 k = 1.
 k_init = k
 
-sigma = 0.1
-sigma_init = sigma
-
 x = np.linspace(0, x_max, num_of_mass)
 y = x * 0.
 dl = x * 0.
