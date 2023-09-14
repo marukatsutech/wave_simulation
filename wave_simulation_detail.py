@@ -127,11 +127,6 @@ def mouse_motion(event):
         pass
 
 
-def on_change_window(e):
-    if not is_play:
-        pass
-
-
 def step():
     global cnt
     cnt += 1
@@ -323,5 +318,4 @@ update_tree()
 
 # Draw animation
 anim = animation.FuncAnimation(fig, update, interval=100)
-root.bind('<Configure>', on_change_window)
 root.mainloop()
