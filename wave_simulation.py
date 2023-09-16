@@ -186,11 +186,11 @@ lbl_sigma = tkinter.Label(frm3, text="sigma")
 lbl_sigma.pack(side='left')
 var_sgm = tkinter.StringVar(root)  # variable for spinbox-value
 var_sgm.set(sigma_init)  # Initial value
-spn_wn = tkinter.Spinbox(
+spn_sgm = tkinter.Spinbox(
     frm3, textvariable=var_sgm, format="%.1f", from_=0.1, to=1.0, increment=0.1,
     command=lambda: change_sigma(var_sgm.get()), width=4
     )
-spn_wn.pack(side='left')
+spn_sgm.pack(side='left')
 lbl_position = tkinter.Label(frm3, text=", position")
 lbl_position.pack(side='left')
 scale_var = tkinter.StringVar(root)
