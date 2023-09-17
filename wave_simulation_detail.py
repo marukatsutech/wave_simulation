@@ -9,6 +9,11 @@ from tkinter import ttk
 import matplotlib.ticker as ticker
 
 
+def change_k1(value):
+    global k1
+    k1 = float(value)
+
+
 def change_k(value):
     global k
     k = float(value)
@@ -58,7 +63,10 @@ def eval_cells():
             dr[i] = y[i] - y_boundary_right
         else:
             dr[i] = y[i] - y[i + 1]
-        f[i] = - k * (dl[i] + dr[i])
+        if var_k1_on_off.get():
+            f[i] = - k * (dl[i] + dr[i]) - k1 *y[i]
+        else:
+            f[i] = - k * (dl[i] + dr[i])
         a[i] = f[i] / mass
 
 
@@ -85,7 +93,7 @@ def update_tree():
 
 
 def update_cells():
-    global lines_mass, lines_spring_left, lines_spring_right, lines_velocity
+    global lines_mass, lines_spring_left, lines_spring_right, lines_velocity, lines_spring_vertical
     # draw cells
     if var_boundary_cond.get() == 1:    # Fixed end
         y_boundary_left = 0.
@@ -104,6 +112,10 @@ def update_cells():
             lines_spring_right[j].set_data([j + 0.5, j + 0.5], [y[j], y_boundary_right])
         else:
             lines_spring_right[j].set_data([j + 0.5, j + 0.5], [y[j], y[j + 1]])
+        if var_k1_on_off.get():
+            lines_spring_vertical[j].set_data([j, j], [0., y[j]])
+        else:
+            lines_spring_vertical[j].set_data([j, j], [0., 0.])
 
 
 def mouse_motion(event):
@@ -169,10 +181,14 @@ is_play = False
 
 # Parameter
 num_of_mass = 32
-mass = 10.
-mass_init = mass
-k = 1.
-k_init = k
+
+mass_init = 10.
+mass = mass_init
+
+k_init = 1.
+k = k_init
+k1_init = 1.
+k1 = k1_init
 
 x = np.arange(num_of_mass)
 y = x * 0.
@@ -210,6 +226,7 @@ tx_step = ax.text(x_min, y_max * 0.95, "Step=" + str(0))
 lines_mass = []
 lines_spring_left = []
 lines_spring_right = []
+lines_spring_vertical = []
 lines_velocity = []
 for iii in range(num_of_mass):
     line_m, = ax.plot([iii - 0.5, iii + 0.5], [0., 0.], linewidth=6)
@@ -218,9 +235,16 @@ for iii in range(num_of_mass):
     lines_spring_left.append(line_sl)
     line_sr, = ax.plot([iii + 0.5, iii + 0.5], [0., 0.], linewidth=1, color='gray')
     lines_spring_right.append(line_sr)
+    line_sv, = ax.plot([iii, iii], [0., 0.], linewidth=1, color='orange')
+    lines_spring_vertical.append(line_sv)
     line_v, = ax.plot([iii - 0.5, iii + 0.5], [0., 0.], linewidth=1, color='blue', linestyle='--')
     lines_velocity.append(line_v)
 
+line_velocity_dummy, = ax.plot([0., 0.], [0., 0.], linewidth=1, color='blue', linestyle='--', label='Velocity')
+line_spring_k0_dummy, = ax.plot([0., 0.], [0., 0.], linewidth=1, color='gray', label='Springs between cells (k0)')
+line_spring_k1_dummy, = ax.plot([0., 0.], [0., 0.], linewidth=1,
+                                color='orange', label='Springs against displacement (k1)')
+ax.legend(prop={"size": 8}, loc="best")
 
 # Tkinter
 root = tk.Tk()
@@ -266,15 +290,26 @@ spn_mass = tk.Spinbox(
     command=lambda: change_mass(var_mass.get()), width=5
     )
 spn_mass.pack(side='left')
-lbl_k = tk.Label(frm_parameter, text=", k0(between cells)")
+lbl_k = tk.Label(frm_parameter, text="k0")
 lbl_k.pack(side='left')
 var_k = tk.StringVar(root)  # variable for spinbox-value
 var_k.set(k_init)  # Initial value
 spn_k = tk.Spinbox(
-    frm_parameter, textvariable=var_k, format="%.1f", from_=1., to=100., increment=1.,
+    frm_parameter, textvariable=var_k, format="%.1f", from_=0., to=100., increment=1.,
     command=lambda: change_k(var_k.get()), width=5
     )
 spn_k.pack(side='left')
+# Checkbutton of k1(against displacement) on/off
+var_k1_on_off = tk.BooleanVar(root)    # Variable for checkbutton
+chk_k1_on_off = tk.Checkbutton(frm_parameter, text="k1", variable=var_k1_on_off)
+chk_k1_on_off.pack(side='left')
+var_k1 = tk.StringVar(root)  # variable for spinbox-value
+var_k1.set(k1_init)  # Initial value
+spn_k1 = tk.Spinbox(
+    frm_parameter, textvariable=var_k1, format="%.1f", from_=1., to=100., increment=1.,
+    command=lambda: change_k1(var_k1.get()), width=5
+    )
+spn_k1.pack(side='left')
 
 # Radio button
 frm_click = ttk.Labelframe(root, relief="ridge", text="Click option", labelanchor="n")
