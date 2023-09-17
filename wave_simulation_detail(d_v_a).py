@@ -237,81 +237,85 @@ btn_clr = tk.Button(root, text="Clear", command=clear_cells)
 btn_clr.pack(side='left')
 
 # x, y
-lbl_x = tk.Label(root, text="Range-x(number of mass)")
+frm_range = ttk.Labelframe(root, relief="ridge", text="Range", labelanchor="n", width=100)
+frm_range.pack(side='left')
+lbl_x = tk.Label(frm_range, text="x(number of mass)")
 lbl_x.pack(side='left')
 var_x = tk.StringVar(root)  # variable for spinbox-value
 var_x.set(range_x_init)  # Initial value
 spn_x = tk.Spinbox(
-    root, textvariable=var_x, format="%.1f", from_=50, to=800, increment=50,
+    frm_range, textvariable=var_x, format="%.1f", from_=50, to=800, increment=50,
     command=lambda: change_range_x(var_x.get()), width=4
     )
 spn_x.pack(side='left')
-lbl_y = tk.Label(root, text="Range-y")
+lbl_y = tk.Label(frm_range, text="y")
 lbl_y.pack(side='left')
 var_y = tk.StringVar(root)  # variable for spinbox-value
 var_y.set(range_y_init)  # Initial value
 spn_y = tk.Spinbox(
-    root, textvariable=var_y, format="%.1f", from_=1., to=20.0, increment=1.,
+    frm_range, textvariable=var_y, format="%.1f", from_=1., to=20.0, increment=1.,
     command=lambda: change_range_y(var_y.get()), width=4
     )
 spn_y.pack(side='left')
 
 # Boundary condition
-frm1 = ttk.Labelframe(root, relief="ridge", text="Boundary condition", labelanchor="n", width=100)
-frm1.pack(side='left')
+frm_bd = ttk.Labelframe(root, relief="ridge", text="Boundary condition", labelanchor="n", width=100)
+frm_bd.pack(side='left')
 var_boundary_cond = tk.IntVar(root)
-rdb_fxe = tk.Radiobutton(frm1, text="Fixed end, ", value=1, var=var_boundary_cond)
-rdb_fxe.pack(side='left')
-rdb_fre = tk.Radiobutton(frm1, text="Free end", value=2, var=var_boundary_cond)
-rdb_fre.pack(side='left')
+rdb_fxe = tk.Radiobutton(frm_bd, text="Fixed end", value=1, var=var_boundary_cond)
+rdb_fxe.pack()
+rdb_fre = tk.Radiobutton(frm_bd, text="Free end", value=2, var=var_boundary_cond)
+rdb_fre.pack()
 var_boundary_cond.set(1)
 
 # Cells parameters
-frm2 = ttk.Labelframe(root, relief="ridge", text="Cells parameters", labelanchor="n")
-frm2.pack(side='left')
-lbl_mass = tk.Label(frm2, text="mass")
+frm_cp = ttk.Labelframe(root, relief="ridge", text="Cells parameters", labelanchor="n")
+frm_cp.pack(side='left')
+lbl_mass = tk.Label(frm_cp, text="mass")
 lbl_mass.pack(side='left')
 var_mass = tk.StringVar(root)  # variable for spinbox-value
 var_mass.set(mass_init)  # Initial value
 spn_mass = tk.Spinbox(
-    frm2, textvariable=var_mass, format="%.1f", from_=1., to=100., increment=1.,
+    frm_cp, textvariable=var_mass, format="%.1f", from_=1., to=100., increment=1.,
     command=lambda: change_mass(var_mass.get()), width=5
     )
 spn_mass.pack(side='left')
-lbl_k = tk.Label(frm2, text=", k(Constant of springs between cells)")
+lbl_k = tk.Label(frm_cp, text=", k(Constant of springs between cells)")
 lbl_k.pack(side='left')
 var_k = tk.StringVar(root)  # variable for spinbox-value
 var_k.set(k_init)  # Initial value
 spn_k = tk.Spinbox(
-    frm2, textvariable=var_k, format="%.1f", from_=1., to=100., increment=1.,
+    frm_cp, textvariable=var_k, format="%.1f", from_=1., to=100., increment=1.,
     command=lambda: change_k(var_k.get()), width=5
     )
 spn_k.pack(side='left')
 
 # Radio button of "Click option"
-frm3 = ttk.Labelframe(root, relief="ridge", text="Click option", labelanchor="n")
-frm3.pack(side='left')
+frm_click = ttk.Labelframe(root, relief="ridge", text="Click option", labelanchor="n")
+frm_click.pack(side='left')
 var_radio_y_or_v = tk.IntVar(root)
 # Radio button 1st
-r_y = tk.Radiobutton(frm3, text="y", value=0, var=var_radio_y_or_v)
+r_y = tk.Radiobutton(frm_click, text="y", value=0, var=var_radio_y_or_v)
 r_y.pack()
 # Radio button 2nd
-r_v = tk.Radiobutton(frm3, text="v", value=1, var=var_radio_y_or_v)
+r_v = tk.Radiobutton(frm_click, text="v", value=1, var=var_radio_y_or_v)
 r_v.pack()
 
-lbl_sigma = tk.Label(root, text="Sigma of Gaussian")
+# Gaussian
+frm_gauss = ttk.Labelframe(root, relief="ridge", text="Gaussian", labelanchor="n")
+frm_gauss.pack(side='left')
+lbl_sigma = tk.Label(frm_gauss, text="Sigma")
 lbl_sigma.pack(side='left')
 var_sgm = tk.StringVar(root)  # variable for spinbox-value
 var_sgm.set(sigma_init)  # Initial value
 spn_sgm = tk.Spinbox(
-    root, textvariable=var_sgm, format="%.1f", from_=0.1, to=10.0, increment=0.1,
+    frm_gauss, textvariable=var_sgm, format="%.1f", from_=0.1, to=10.0, increment=0.1,
     command=lambda: change_sigma(var_sgm.get()), width=4
     )
 spn_sgm.pack(side='left')
-
 # Checkbutton of round on/off
 var_round = tk.BooleanVar(root)    # Variable for checkbutton
-chk_round = tk.Checkbutton(root, text="Round", variable=var_round)
+chk_round = tk.Checkbutton(frm_gauss, text="Round", variable=var_round)
 chk_round.pack(side='left')
 
 update_cells()
