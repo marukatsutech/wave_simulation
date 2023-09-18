@@ -64,7 +64,7 @@ def eval_cells():
         else:
             dr[i] = y[i] - y[i + 1]
         if var_k1_on_off.get():
-            f[i] = - k * (dl[i] + dr[i]) - k1 *y[i]
+            f[i] = - k * (dl[i] + dr[i]) - k1 * y[i]
         else:
             f[i] = - k * (dl[i] + dr[i])
         a[i] = f[i] / mass
