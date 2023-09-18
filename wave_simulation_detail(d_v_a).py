@@ -6,7 +6,32 @@ import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import tkinter as tk
 from tkinter import ttk
-import matplotlib.ticker as ticker
+
+def change_constraint_area_x(value):
+    global constraint_location
+    constraint_location = float(value)
+    line_constraint_upper.set_data([constraint_location - constraint_width, constraint_location + constraint_width],
+                                     [constraint_height, constraint_height])
+    line_constraint_lower.set_data([constraint_location - constraint_width, constraint_location + constraint_width],
+                                   [-constraint_height, -constraint_height])
+
+
+def change_constraint_area_width(value):
+    global constraint_width
+    constraint_width = float(value)
+    line_constraint_upper.set_data([constraint_location - constraint_width, constraint_location + constraint_width],
+                                     [constraint_height, constraint_height])
+    line_constraint_lower.set_data([constraint_location - constraint_width, constraint_location + constraint_width],
+                                   [-constraint_height, -constraint_height])
+
+
+def change_constraint_area_height(value):
+    global constraint_height
+    constraint_height = float(value)
+    line_constraint_upper.set_data([constraint_location - constraint_width, constraint_location + constraint_width],
+                                     [constraint_height, constraint_height])
+    line_constraint_lower.set_data([constraint_location - constraint_width, constraint_location + constraint_width],
+                                   [-constraint_height, -constraint_height])
 
 
 def change_range_x(value):
@@ -84,10 +109,25 @@ def eval_cells():
             dr[i] = y[i] - y_boundary_right
         else:
             dr[i] = y[i] - y[i + 1]
-        if var_k1_on_off.get():
-            f[i] = - k * (dl[i] + dr[i]) - k1 * y[i]
-        else:
+        if var_k2_op.get() == 0:
             f[i] = - k * (dl[i] + dr[i])
+        elif var_k2_op.get() == 1:
+            f[i] = - k * (dl[i] + dr[i]) - k1 * y[i]
+        elif var_k2_op.get() == 2:
+            if constraint_location - constraint_width <= i <= constraint_location + constraint_width:
+                f[i] = - k * (dl[i] + dr[i]) - k1 * y[i]
+            else:
+                f[i] = - k * (dl[i] + dr[i])
+        else:
+            if constraint_location - constraint_width <= i <= constraint_location + constraint_width:
+                if - constraint_height <= y[i] <= constraint_height:
+                    f[i] = - k * (dl[i] + dr[i])
+                elif y[i] > constraint_height:
+                    f[i] = - k * (dl[i] + dr[i]) - k1 * (y[i] - constraint_height)
+                else:
+                    f[i] = - k * (dl[i] + dr[i]) - k1 * (y[i] + constraint_height)
+            else:
+                f[i] = - k * (dl[i] + dr[i])
         a[i] = f[i] / mass
 
 
@@ -204,6 +244,10 @@ f = x * 0.
 a = x * 0.
 v = x * 0.
 
+constraint_location = (x_max - x_min) / 2.
+constraint_width = 10.
+constraint_height = 1.
+
 # Generate figure and axes
 fig = Figure()
 ax = fig.add_subplot(111)
@@ -224,6 +268,11 @@ string_y, = ax.plot(x, y, linestyle='-', label="Displacement")
 string_v, = ax.plot(x, y, linestyle='--', label="velocity", linewidth=1)
 string_a, = ax.plot(x, y, linestyle='-.', label="acceleration", linewidth=1)
 ax.legend(prop={"size": 8}, loc="best")
+
+line_constraint_upper, = ax.plot([constraint_location - constraint_width, constraint_location + constraint_width],
+                                 [constraint_height, constraint_height], color='red', linestyle='--')
+line_constraint_lower, = ax.plot([constraint_location - constraint_width, constraint_location + constraint_width],
+                                 [-constraint_height, -constraint_height], color='red', linestyle='--')
 
 # Tkinter
 root = tk.Tk()
@@ -300,27 +349,73 @@ spn_k = tk.Spinbox(
     command=lambda: change_k(var_k.get()), width=5
     )
 spn_k.pack(side='left')
-# Checkbutton of k1(against displacement) on/off
-var_k1_on_off = tk.BooleanVar(root)    # Variable for checkbutton
-chk_k1_on_off = tk.Checkbutton(frm_parameter, text="k1(against displacement)", variable=var_k1_on_off)
-chk_k1_on_off.pack(side='left')
+lbl_k2 = tk.Label(frm_parameter, text="k1(against displacement)")
+lbl_k2.pack(side='left')
 var_k1 = tk.StringVar(root)  # variable for spinbox-value
 var_k1.set(k1_init)  # Initial value
 spn_k1 = tk.Spinbox(
-    frm_parameter, textvariable=var_k1, format="%.1f", from_=1., to=100., increment=1.,
+    frm_parameter, textvariable=var_k1, format="%.1f", from_=0., to=100., increment=1.,
     command=lambda: change_k1(var_k1.get()), width=5
     )
 spn_k1.pack(side='left')
 
-# Radio button of "Click option"
-frm_click = ttk.Labelframe(root, relief="ridge", text="Click option", labelanchor="n")
+# k2 option
+frm_k2_op = ttk.Labelframe(root, relief="ridge", text="k2 option", labelanchor="n")
+frm_k2_op.pack(side='left')
+var_k2_op = tk.IntVar(root)
+# Radio button 1st
+rd_k2_op_non = tk.Radiobutton(frm_k2_op, text="none", value=0, var=var_k2_op)
+rd_k2_op_non.pack()
+# Radio button 2st
+rd_k2_op_all = tk.Radiobutton(frm_k2_op, text="All area", value=1, var=var_k2_op)
+rd_k2_op_all.pack()
+# Radio button 3nd
+rd_k2_op_ca = tk.Radiobutton(frm_k2_op, text="Constraint area", value=2, var=var_k2_op)
+rd_k2_op_ca.pack()
+# Radio button 4th
+rd_k2_op_ca1 = tk.Radiobutton(frm_k2_op, text="Constraint area(apply height limit)", value=3, var=var_k2_op)
+rd_k2_op_ca1.pack()
+
+# Constraint area
+frm_const = ttk.Labelframe(root, relief="ridge", text="Constraint area", labelanchor="n")
+frm_const.pack(side='left')
+lbl_x_area = tk.Label(frm_const, text="x")
+lbl_x_area.pack(side='left')
+var_x_area = tk.StringVar(root)  # variable for spinbox-value
+var_x_area.set(constraint_location)  # Initial value
+spn_x_area = tk.Spinbox(
+    frm_const, textvariable=var_x_area, format="%.2f", from_=0., to=800., increment=1.,
+    command=lambda: change_constraint_area_x(var_x_area.get()), width=5
+    )
+spn_x_area.pack(side='left')
+lbl_width_area = tk.Label(frm_const, text="width")
+lbl_width_area.pack(side='left')
+var_width_area = tk.StringVar(root)  # variable for spinbox-value
+var_width_area.set(constraint_width)  # Initial value
+spn_width_area = tk.Spinbox(
+    frm_const, textvariable=var_width_area, format="%.2f", from_=1., to=100., increment=1.,
+    command=lambda: change_constraint_area_width(var_width_area.get()), width=5
+    )
+spn_width_area.pack(side='left')
+lbl_height_area = tk.Label(frm_const, text="height")
+lbl_height_area.pack(side='left')
+var_height_area = tk.StringVar(root)  # variable for spinbox-value
+var_height_area.set(constraint_height)  # Initial value
+spn_height_area = tk.Spinbox(
+    frm_const, textvariable=var_height_area, format="%.2f", from_=0., to=10., increment=0.1,
+    command=lambda: change_constraint_area_height(var_height_area.get()), width=5
+    )
+spn_height_area.pack(side='left')
+
+# Click option of Gaussian displacement
+frm_click = ttk.Labelframe(root, relief="ridge", text="Click option(apply Gaussian)", labelanchor="n")
 frm_click.pack(side='left')
 var_radio_y_or_v = tk.IntVar(root)
 # Radio button 1st
-r_y = tk.Radiobutton(frm_click, text="y", value=0, var=var_radio_y_or_v)
+r_y = tk.Radiobutton(frm_click, text="y(Displacement)", value=0, var=var_radio_y_or_v)
 r_y.pack()
 # Radio button 2nd
-r_v = tk.Radiobutton(frm_click, text="v", value=1, var=var_radio_y_or_v)
+r_v = tk.Radiobutton(frm_click, text="v(Velocity)", value=1, var=var_radio_y_or_v)
 r_v.pack()
 
 # Gaussian
@@ -339,6 +434,8 @@ spn_sgm.pack(side='left')
 var_round = tk.BooleanVar(root)    # Variable for checkbutton
 chk_round = tk.Checkbutton(frm_gauss, text="Round", variable=var_round)
 chk_round.pack(side='left')
+
+
 
 update_cells()
 
