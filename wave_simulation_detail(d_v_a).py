@@ -30,6 +30,11 @@ def change_sigma(value):
     sigma = float(value)
 
 
+def change_k1(value):
+    global k1
+    k1 = float(value)
+
+
 def change_k(value):
     global k
     k = float(value)
@@ -79,7 +84,10 @@ def eval_cells():
             dr[i] = y[i] - y_boundary_right
         else:
             dr[i] = y[i] - y[i + 1]
-        f[i] = - k * (dl[i] + dr[i])
+        if var_k1_on_off.get():
+            f[i] = - k * (dl[i] + dr[i]) - k1 * y[i]
+        else:
+            f[i] = - k * (dl[i] + dr[i])
         a[i] = f[i] / mass
 
 
@@ -177,13 +185,16 @@ is_play = False
 # Parameter
 num_of_mass_max = 800
 num_of_mass = 400
-mass = 10.
-mass_init = mass
-k = 1.
-k_init = k
 
-sigma = 4.0
-sigma_init = sigma
+mass_init = 10.
+mass = mass_init
+k_init = 1.
+k = k_init
+k1_init = 1.
+k1 = k1_init
+
+sigma_init = 4.0
+sigma = sigma_init
 
 x = np.arange(num_of_mass_max)
 y = x * 0.
@@ -269,26 +280,37 @@ rdb_fre.pack()
 var_boundary_cond.set(1)
 
 # Cells parameters
-frm_cp = ttk.Labelframe(root, relief="ridge", text="Cells parameters", labelanchor="n")
-frm_cp.pack(side='left')
-lbl_mass = tk.Label(frm_cp, text="mass")
+frm_parameter = ttk.Labelframe(root, relief="ridge", text="Cells parameters", labelanchor="n")
+frm_parameter.pack(side='left')
+lbl_mass = tk.Label(frm_parameter, text="mass")
 lbl_mass.pack(side='left')
 var_mass = tk.StringVar(root)  # variable for spinbox-value
 var_mass.set(mass_init)  # Initial value
 spn_mass = tk.Spinbox(
-    frm_cp, textvariable=var_mass, format="%.1f", from_=1., to=100., increment=1.,
+    frm_parameter, textvariable=var_mass, format="%.1f", from_=1., to=100., increment=1.,
     command=lambda: change_mass(var_mass.get()), width=5
     )
 spn_mass.pack(side='left')
-lbl_k = tk.Label(frm_cp, text=", k(Constant of springs between cells)")
+lbl_k = tk.Label(frm_parameter, text="k0(between cells)")
 lbl_k.pack(side='left')
 var_k = tk.StringVar(root)  # variable for spinbox-value
 var_k.set(k_init)  # Initial value
 spn_k = tk.Spinbox(
-    frm_cp, textvariable=var_k, format="%.1f", from_=1., to=100., increment=1.,
+    frm_parameter, textvariable=var_k, format="%.1f", from_=0., to=100., increment=1.,
     command=lambda: change_k(var_k.get()), width=5
     )
 spn_k.pack(side='left')
+# Checkbutton of k1(against displacement) on/off
+var_k1_on_off = tk.BooleanVar(root)    # Variable for checkbutton
+chk_k1_on_off = tk.Checkbutton(frm_parameter, text="k1(against displacement)", variable=var_k1_on_off)
+chk_k1_on_off.pack(side='left')
+var_k1 = tk.StringVar(root)  # variable for spinbox-value
+var_k1.set(k1_init)  # Initial value
+spn_k1 = tk.Spinbox(
+    frm_parameter, textvariable=var_k1, format="%.1f", from_=1., to=100., increment=1.,
+    command=lambda: change_k1(var_k1.get()), width=5
+    )
+spn_k1.pack(side='left')
 
 # Radio button of "Click option"
 frm_click = ttk.Labelframe(root, relief="ridge", text="Click option", labelanchor="n")
