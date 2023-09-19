@@ -7,6 +7,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import tkinter as tk
 from tkinter import ttk
 
+
 def change_constraint_area_x(value):
     global constraint_location
     constraint_location = float(value)
