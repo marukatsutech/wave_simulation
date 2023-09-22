@@ -436,8 +436,6 @@ var_round = tk.BooleanVar(root)    # Variable for checkbutton
 chk_round = tk.Checkbutton(frm_gauss, text="Round", variable=var_round)
 chk_round.pack(side='left')
 
-
-
 update_cells()
 
 # Draw animation
