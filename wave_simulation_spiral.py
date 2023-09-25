@@ -481,7 +481,7 @@ lbl_ang_v.pack()
 var_rot = tk.StringVar(root)  # variable for spinbox-value
 var_rot.set(rot_angle_v_init)  # Initial value
 spn_rot = tk.Spinbox(
-    frm_rot, textvariable=var_rot, format="%.3f", from_=0., to=50.0, increment=0.001,
+    frm_rot, textvariable=var_rot, format="%.3f", from_=-50., to=50.0, increment=0.001,
     command=lambda: change_rot_angle_v(var_rot.get()), width=6
     )
 spn_rot.pack()

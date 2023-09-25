@@ -465,7 +465,7 @@ lbl_k1_op_ca3.pack()
 var_k1_op = tk.StringVar(root)  # variable for spinbox-value
 var_k1_op.set(k1_op_init)  # Initial value
 spn_k1_op = tk.Spinbox(
-    frm_k1_op, textvariable=var_k1_op, format="%.2f", from_=0., to=10., increment=0.01,
+    frm_k1_op, textvariable=var_k1_op, format="%.2f", from_=-10., to=10., increment=0.01,
     command=lambda: change_k1_op(var_k1_op.get()), width=5
     )
 spn_k1_op.pack()
