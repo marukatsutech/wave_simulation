@@ -255,7 +255,7 @@ spn_dis_gauss = tk.Spinbox(
 )
 spn_dis_gauss.pack(side='left')
 btn_gaussian = tk.Button(frm_gaussian, text="Push", command=lambda: impact_gaussian())
-btn_gaussian .pack(side='left')
+btn_gaussian.pack(side='left')
 
 # Play and pause button
 btn_pp = tk.Button(root, text="Play/Pause", command=switch)
