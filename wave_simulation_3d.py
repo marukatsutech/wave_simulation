@@ -199,7 +199,7 @@ frm_parameters.pack(side='left')
 lbl_k = tk.Label(frm_parameters, text="k(spring constant)")
 lbl_k.pack(side='left')
 var_k = tk.StringVar(root)  # variable for spinbox-value
-var_k.set(k)  # Initial value
+var_k.set(str(k))  # Initial value
 spn_k = tk.Spinbox(
     frm_parameters, textvariable=var_k, format="%.2f", from_=1., to=10.0, increment=1.,
     command=lambda: change_k(float(var_k.get())), width=5
@@ -208,7 +208,7 @@ spn_k.pack(side='left')
 lbl_mass = tk.Label(frm_parameters, text="Point mass")
 lbl_mass.pack(side='left')
 var_mass = tk.StringVar(root)  # variable for spinbox-value
-var_mass.set(mass)  # Initial value
+var_mass.set(str(mass))  # Initial value
 spn_mass = tk.Spinbox(
     frm_parameters, textvariable=var_mass, format="%.2f", from_=20., to=50., increment=1.,
     command=lambda: change_mass(float(var_mass.get())), width=5
@@ -230,7 +230,7 @@ frm_gaussian.pack(side='left')
 lbl_sigma = tk.Label(frm_gaussian, text="Sigma")
 lbl_sigma.pack(side='left')
 var_sigma = tk.StringVar(root)  # variable for spinbox-value
-var_sigma.set(sigma)  # Initial value
+var_sigma.set(str(sigma))  # Initial value
 spn_sigma = tk.Spinbox(
     frm_gaussian, textvariable=var_sigma, format="%.2f", from_=0.1, to=1.0, increment=0.1,
     command=lambda: change_sigma(float(var_sigma.get())), width=5
@@ -239,7 +239,7 @@ spn_sigma.pack(side='left')
 lbl_num_gauss = tk.Label(frm_gaussian, text="Number")
 lbl_num_gauss.pack(side='left')
 var_num_gauss = tk.StringVar(root)  # variable for spinbox-value
-var_num_gauss.set(num_gaussian)  # Initial value
+var_num_gauss.set(str(num_gaussian))  # Initial value
 spn_num_gauss = tk.Spinbox(
     frm_gaussian, textvariable=var_num_gauss, from_=1, to=6, increment=1,
     command=lambda: change_num_gaussian(int(var_num_gauss.get())), width=5
@@ -248,7 +248,7 @@ spn_num_gauss.pack(side='left')
 lbl_dis_gauss = tk.Label(frm_gaussian, text="Distance")
 lbl_dis_gauss.pack(side='left')
 var_dis_gauss = tk.StringVar(root)  # variable for spinbox-value
-var_dis_gauss.set(distance_gaussian)  # Initial value
+var_dis_gauss.set(str(distance_gaussian))  # Initial value
 spn_dis_gauss = tk.Spinbox(
     frm_gaussian, textvariable=var_dis_gauss, format="%.1f", from_=0., to=6.0, increment=0.1,
     command=lambda: change_distance_gaussian(float(var_dis_gauss.get())), width=5
