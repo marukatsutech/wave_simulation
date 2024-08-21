@@ -5,6 +5,7 @@ import matplotlib.animation as animation
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from mpl_toolkits.mplot3d import proj3d
 
 
 def get_force(i, j):
@@ -181,7 +182,12 @@ ax.set_box_aspect((2, 2, 1))
 set_axis()
 
 # Generate items
-txt_step = ax.text(x_min, y_max, z_max, "Step=" + str(0))
+# Text items
+txt_step = ax.text2D(x_min, y_max, "Step=" + str(cnt))
+xz, yz, _ = proj3d.proj_transform(x_min, y_max, z_max, ax.get_proj())
+txt_step.set_position((xz, yz))
+
+# Plot items
 wireframe = ax.plot_wireframe(X, Y, Z, rstride=2, cstride=2)
 
 # Tkinter
