@@ -342,6 +342,6 @@ lbl_value_cell = tk.Label(root, text=" Cell(x0, y0)=0")
 lbl_value_cell.pack(side='left')
 
 # Draw animation
-anim = animation.FuncAnimation(fig, update, interval=100)
+anim = animation.FuncAnimation(fig, update, interval=100, save_count=100)
 root.bind('<Configure>', on_change_window)
 root.mainloop()
