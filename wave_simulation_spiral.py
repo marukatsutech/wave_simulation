@@ -293,7 +293,7 @@ loc_gaussian = (x_max - x_min) / 2.
 angle_gauss = 1.
 
 # Generate figure and axes
-fig = Figure(figsize=(8, 6))
+fig = Figure()
 ax = fig.add_subplot(111, projection='3d')
 # ax = p3.Axes3D(fig)
 ax.set_box_aspect((2, 1, 1))
@@ -489,5 +489,5 @@ spn_rot.pack()
 update_cells()
 
 # Draw animation
-anim = animation.FuncAnimation(fig, update, interval=100)
+anim = animation.FuncAnimation(fig, update, interval=100, save_count=100)
 root.mainloop()
