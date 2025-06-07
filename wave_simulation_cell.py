@@ -238,12 +238,12 @@ y_cells0 = []
 s_cells0 = []  # maker size
 c_cells0 = []  # maker color
 size_maker = 80
-scat = ax.scatter(x_cells0, y_cells0, marker='s', s=size_maker, c=c_cells0, cmap='seismic', vmin=-5., vmax=5.)
+scat = ax.scatter(x_cells0, y_cells0, marker='s', s=size_maker, c=c_cells0, cmap='seismic', vmin=-2., vmax=2.)
 x_boundary = []
 y_boundary = []
 s_boundary = []  # maker size
 c_boundary = []  # maker color
-size_maker = 80
+size_maker = 30
 scat_boundary = ax.scatter(x_boundary, y_boundary, marker='s', s=size_maker, c='black')
 
 
